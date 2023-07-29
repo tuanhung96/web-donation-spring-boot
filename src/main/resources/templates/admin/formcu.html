@@ -1,0 +1,104 @@
+<form action="update" method="post">
+  <input type="hidden" name="id" />
+  <div class="row">
+    <div class="col-6">
+      <label for="addname" class="col-form-label">Họ và tên:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="addname"
+        name="fullName"
+        required
+      />
+    </div>
+    <div class="col-6">
+      <label for="addcost" class="col-form-label">Email:</label>
+      <input
+        readonly
+        type="email"
+        class="form-control"
+        id="addcost"
+        name="email"
+        required
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <label for="addname" class="col-form-label">Số điện thoại:</label>
+      <input
+        type="number"
+        class="form-control"
+        id="addname"
+        name="phoneNumber"
+        required
+      />
+    </div>
+    <div class="col-6">
+      <label for="addcost" class="col-form-label">Địa chỉ:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="addcost"
+        name="address"
+        required
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <label for="addname" class="col-form-label">Tài khoản:</label>
+      <input
+        readonly
+        type="text"
+        class="form-control"
+        id="addname"
+        name="userName"
+        required
+      />
+      <input
+        readonly
+        type="hidden"
+        class="form-control"
+        id="addname"
+        name="userId"
+        required
+      />
+      <input
+        readonly
+        type="hidden"
+        class="form-control"
+        id="addname"
+        name="password"
+        required
+      />
+      <input
+        readonly
+        type="hidden"
+        class="form-control"
+        id="addname"
+        name="status"
+        required
+      />
+    </div>
+    <div class="col-6">
+      <label for="ct_id" class="col-form-label">Vai trò:</label>
+      <select class="form-control" id="ct_id" name="roleId" required>
+        <option value="${user.role.id}" selected>${user.role.roleName}</option>
+
+        <c:if test="${user.role.id == 1}">
+          <option value="2">user</option>
+        </c:if>
+        <c:if test="${user.role.id == 2}">
+          <option value="1">admin</option>
+        </c:if>
+      </select>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      Đóng
+    </button>
+    <button type="submit" class="btn btn-primary">Lưu</button>
+  </div>
+</form>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Login - SB Admin</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css"
+          rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/admin1/assets/css/styles.css}">
+
+    <script th:src="@{/admin1/assets/js/scripts.js}"></script>
+    <script th:src="@{/admin1/assets/js/JQuery3.3.1.js}" />"></script>
+    <script th:src="@{/admin1/assets/js/datatables-simple-demo.js}" />"></script>
+    <script th:src="@{/user/assets/js/jquery.min.js}" />"></script>
+    <script th:src="@{/user/assets/js/bootstrap.bundle.min.js}" />"></script>
+    <script th:src="@{/user/assets/js/isotope.pkgd.min.js}" />"></script>
+    <script th:src="@{/user/assets/js/stickyfill.min.js}" />"></script>
+    <script th:src="@{/user/assets/js/jquery.fancybox.min.js}" />"></script>
+    <script th:src="@{/user/assets/js/jquery.easing.1.3.js}" />"></script>
+    <script th:src="@{/user/assets/js/jquery.waypoints.min.js}" />"></script>
+    <script th:src="@{/user/assets/js/jquery.animateNumber.min.js}" />"></script>
+    <script th:src="@{/user/assets/js/owl.carousel.min.js}" />"></script>
+    <script th:src="@{/user/assets/js/bootstrap-select.min.js}" />"></script>
+    <script th:src="@{/user/assets/js/custom.js}" />"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/29.0.0/classic/ckeditor.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-primary">
+
+<!--<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-5">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header"><h3 class="text-center font-weight-light my-4">Đăng nhập</h3></div>
+                            <div class="card-body">
+                                <form name='f' method='POST'>
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="inputEmail" name="email" type="text" placeholder="name@example.com" />
+                                        <label for="inputEmail">Email</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="inputPassword" name="password" type="password" placeholder="Password" />
+                                        <label for="inputPassword">Mật khẩu</label>
+                                    </div>
+                                    <div th:if="${error}">
+                                        <p style="color: red" > Sai tài khoản hoặc mật khẩu</p>
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                        <button class="btn btn-primary" type="submit" style="margin-left: 350px !important;">Login</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>-->
+
+<div th:if="${msg_register_success}" class="toast" data-delay="2500"
+     style="position:fixed; top: 100PX; right: 10PX;z-index: 2000;width: 300px">
+    <script>
+        swal({
+            title: 'Đăng ký thành công!',
+            /* text: 'Redirecting...', */
+            icon: 'success',
+            timer: 3000,
+            buttons: true,
+            type: 'success'
+        })
+    </script>
+</div>
+
+<!--<div th:if="${msg_register_error}" class="toast" data-delay="2500"
+     style="position:fixed; top: 100PX; right: 10PX;z-index: 2000;width: 300px">
+    <script>
+        swal({
+            title: 'Đăng ký thất bại!',
+            /* text: 'Redirecting...', */
+            icon: 'error',
+            timer: 3000,
+            buttons: true,
+            type: 'error'
+        })
+    </script>
+</div>-->
+
+<!-- HOME -->
+<section class="section-hero overlay inner-page bg-image" id="home-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <h1 class="text-white font-weight-bold">Đăng kí / đăng nhập</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="site-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-5">
+                <h2 class="mb-4">Đăng kí</h2>
+                <form th:action="@{/register}" th:object="${user}" method="POST" class="p-4 border rounded">
+                    <div class="row form-group">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="email">Email</label>
+                            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="Email"
+                                   required>
+                        </div>
+                        <div th:if="${email_exists}">
+                            <i>Email exists</i>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="fullName">Họ và tên</label>
+                            <input type="text" id="fullName" th:field="*{fullName}" class="form-control"
+                                   placeholder="Họ và tên" required>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="password">Mật khẩu</label>
+                            <input type="password" id="password" th:field="*{password}" class="form-control"
+                                   placeholder="Mật khẩu" required>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-4">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="fname">Nhập lại mật khẩu</label>
+                            <input type="password" id="fname" name="rePassword" class="form-control"
+                                   placeholder="Nhập lại mật khẩu" required>
+                        </div>
+                        <div th:if="${msg_register_error}">
+                            <i>Password is not equal</i>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="fname">Vai trò</label>
+                            <select class="form-control" th:field="*{role.id}" aria-label="Default select example"
+                                    required>
+                                <option th:value="null" selected>Chọn vai trò</option>
+                                <option th:value="1">Admin</option>
+                                <option th:value="2">User</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <input type="submit" value="Đăng kí" class="btn px-4 btn-primary text-white">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-lg-6">
+                <h2 class="mb-4">Đăng nhập</h2>
+                <form th:action="@{/authenticateTheUser}" method="POST" class="p-4 border rounded">
+                    <div th:if="${param.error}">
+                        <i>Invalid email/password Or Account has not been verified!</i>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="email2">Email</label>
+                            <!-- field name have to be "username" for Spring Security to login -->
+                            <input type="email" id="email2" name="username" class="form-control" placeholder="Email"
+                                   required>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-4">
+                        <div class="col-md-12 mb-3 mb-md-0">
+                            <label class="text-black" for="password2">Mật khẩu</label>
+                            <input type="password" id="password2" name="password" class="form-control"
+                                   placeholder="Mật khẩu" required>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <input type="submit" value="Đăng nhập" class="btn px-4 btn-primary text-white">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+</body>
+</html>

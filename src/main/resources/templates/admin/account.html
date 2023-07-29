@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html  lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Quản trị</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+  <link th:href="@{/admin1/assets/css/styles.css}" rel="stylesheet" />
+
+  <script th:src="@{/admin1/assets/js/datatables-simple-demo.js}"></script>
+  <script th:src="@{/admin1/assets/js/scripts.js}"></script>
+  <script th:src="@{/admin1/assets/js/JQuery3.3.1.js}" />"></script>
+  <script th:src="@{/user/assets/js/jquery.min.js}" />"></script>
+  <script th:src="@{/user/assets/js/bootstrap.bundle.min.js}" />"></script>
+  <script th:src="@{/user/assets/js/isotope.pkgd.min.js}" />"></script>
+  <script th:src="@{/user/assets/js/stickyfill.min.js}" />"></script>
+  <script th:src="@{/user/assets/js/jquery.fancybox.min.js}" />"></script>
+  <script th:src="@{/user/assets/js/jquery.easing.1.3.js}" />"></script>
+  <script th:src="@{/user/assets/js/jquery.waypoints.min.js}" />"></script>
+  <script th:src="@{/user/assets/js/jquery.animateNumber.min.js}" />"></script>
+  <script th:src="@{/user/assets/js/owl.carousel.min.js}" />"></script>
+  <script th:src="@{/user/assets/js/bootstrap-select.min.js}" />"></script>
+  <script th:src="@{/user/assets/js/custom.js}" />"></script>
+  <script src="https://cdn.ckeditor.com/ckeditor5/29.0.0/classic/ckeditor.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+</head>
+
+<body class="sb-nav-fixed">
+
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+  <nav th:fragment="html_nav" class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3">QUẢN TRỊ</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
+            class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+    </form>
+    <!-- Navbar-->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a sec:authorize="hasRole('ADMIN')" class="nav-link dropdown-toggle" th:href="@{/logout}" role="button" ><i class="fas fa-user fa-fw"></i><span> Logout</span></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown1">
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Activity Log</a></li>
+                    <li>
+                        <hr class="dropdown-divider" />
+                    </li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+  </nav>
+</nav>
+
+<div th:if="${addUserSuccess}" class="toast" data-delay="2000"
+     style="position:fixed;top: 100PX; right: 10PX;z-index: 2000;width: 300px">
+  <script>
+    swal({
+      title: 'Add User Successfully!',
+      /* text: 'Redirecting...', */
+      icon: 'success',
+      timer: 3000,
+      buttons: true,
+      type: 'success'
+    })
+  </script>
+</div>
+
+<div th:if="${email_exists}" class="toast" data-delay="2000"
+     style="position:fixed;top: 100PX; right: 10PX;z-index: 2000;width: 300px">
+  <script>
+    swal({
+      title: 'Email existed!',
+      /* text: 'Redirecting...', */
+      icon: 'error',
+      timer: 3000,
+      buttons: true,
+      type: 'error'
+    })
+  </script>
+</div>
+
+<div id="layoutSidenav">
+  <div id="layoutSidenav_nav">
+    <div th:fragment="html_menu">
+      <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+          <div class="sb-sidenav-menu">
+              <div class="nav">
+                  <a class="nav-link" href="account">
+                      <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                      Quản lý người dùng
+                  </a>
+                  <a class="nav-link" href="donation">
+                      <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                      Quản lý đợt quyên góp
+                  </a>
+              </div>
+          </div>
+
+      </nav>
+  </div>
+  </div>
+
+  <div id="layoutSidenav_content">
+    <main>
+      <div class="container-fluid px-4">
+        <h1 class="mt-4">Danh sách người dùng</h1>
+        <div class="card mb-4">
+          <div class="card-header">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                    data-bs-target="#exampleModalAdd">
+              Thêm mới
+            </button>
+
+            <!-- Modal Add-->
+            <div class="modal fade" id="exampleModalAdd" tabindex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabelll">Thêm mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form th:action="@{/admin/addUser}" method="post">
+                      <div class="row">
+                        <div class="col-6">
+                          <label for="fullName"
+                                 class="col-form-label">Name:</label>
+                          <input type="text" class="form-control"
+                                 id="fullName" name="fullName" required>
+                        </div>
+                        <div class="col-6">
+                          <label for="email"
+                                 class="col-form-label">Email:</label>
+                          <input type="email" class="form-control"
+                                 id="email" name="email" required
+                                 pattern="[A-Za-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}" title="Invalid email">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-6">
+                          <label for="phoneNumber"
+                                 class="col-form-label">Số điện thoại:</label>
+                          <input type="number" class="form-control"
+                                 id="phoneNumber" name="phoneNumber" required
+                                 pattern="[0-9]{10}" title="Phone Number contain ten number">
+                        </div>
+                        <div class="col-6">
+                          <label for="address"
+                                 class="col-form-label">Địa chỉ:</label>
+                          <input type="text" class="form-control"
+                                 id="address" name="address" required>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-6">
+                          <label for="userName"
+                                 class="col-form-label">Tài khoản:</label>
+                          <input type="text" class="form-control"
+                                 id="userName" name="userName" required>
+                        </div>
+                        <div class="col-6">
+                          <label for="password"
+                                 class="col-form-label">Mật khẩu:</label>
+                          <input type="password" class="form-control"
+                                 id="password" name="password" required>
+                        </div>
+                        <div class="col-6">
+                          <label for="idRole" class="col-form-label">Vai trò:</label>
+                          <select class="form-control" id="idRole" name="roleId" required>
+                            <option th:value="null" selected>Chọn vai trò</option>
+                            <option th:value="1">Admin</option>
+                            <option th:value="2">User</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Thêm </button>
+                      </div>
+                    </form>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- Modal Add-->
+
+          </div>
+
+          <div class="card-body">
+            <table id="datatablesSimple">
+              <thead>
+              <tr style="background-color: gray !important;">
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Địa chỉ</th>
+                <th>Tài khoản</th>
+                <th>Vai trò</th>
+                <th >Trạng thái</th>
+                <th >Hành động</th>
+              </tr>
+              </thead>
+              <tfoot>
+              <tr>
+              </tr>
+              </tfoot>
+              <tbody>
+<!--              <input type="hidden" th:value="${users.size()}" id="dodai" />-->
+              <th:block th:each="user : ${users}">
+                <tr>
+                  <td th:text="${user.fullName}"></td>
+                  <td th:text="${user.email}"></td>
+                  <td th:text="${user.phoneNumber}"></td>
+                  <td th:text="${user.address}"></td>
+                  <td th:text="${user.userName}"></td>
+                  <td th:if="${user.role.id == 1}">Admin</td>
+                  <td th:if="${user.role.id == 2}">User</td>
+                  <td th:if="${user.status == 1}" style="color: #1c7430;font-weight: bold">Hoạt động</td>
+                  <td th:if="${user.status == 2}" style="color: red;font-weight: bold">Đã khóa</td>
+
+                  <td style="width : 270px">
+<!--                    <button type="button" style="width: 80px" class="btn btn-success" data-bs-toggle="modal"
+                            th:data-bs-target="'#idModelMail'+${user.id}">
+                      Gửi
+                    </button>-->
+                    <button type="button" style="width: 80px" class="btn btn-primary" data-bs-toggle="modal"
+                            th:data-bs-target="'#exampleModal'+${user.id}">
+                      Sửa
+                    </button>
+                    <button type="button" style="width: 80px" class="btn btn-warning" data-bs-toggle="modal"
+                            th:data-bs-target="'#idModelDetail'+${user.id}">
+                      Chi tiết
+                    </button>
+                    <button type="button" style="width: 80px" class="btn btn-danger mt-1" data-bs-toggle="modal"
+                            th:data-bs-target="'#idModelDel'+${user.id}" >
+                      Xóa
+                    </button>
+                    <form th:if="${user.status == 1}"  th:action="@{/admin/lockUser}" method="get" style="margin-left: 85px;margin-top: -38px">
+                      <input type="hidden" class="form-control" name="userId" th:value="${user.id}">
+                      <button type="submit" style="width: 80px" class="btn btn-danger" >
+                        Khóa
+                      </button>
+                    </form>
+
+                    <form th:if="${user.status == 2}"  th:action="@{/admin/unlockUser}" method="get">
+                      <input type="hidden" class="form-control" name="userId" th:value="${user.id}">
+                      <button type="submit" style="width: 80px" class="btn btn-success" >
+                        Mở
+                      </button>
+                    </form>
+
+                    <!-- Model Delete-->
+                    <div class="modal fade" th:id="'idModelDel' + ${user.id}" tabindex="-1"
+                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Bạn chắc chắn muốn xóa ?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            Người dùng : <span th:text="${user.fullName}"></span>
+                            <form th:action="@{/admin/delete}" method="post">
+                              <input type="hidden" class="form-control" name="userId" th:value="${user.id}">
+                              <div class="modal-footer" style="margin-top: 20px">
+                                <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                  Close
+                                </button>
+                                <button type="submit" class="btn btn-danger">Xóa</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!--<div class="modal fade" th:id="'idModelMail' + ${user.id}" tabindex="-1"
+                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Gửi đến: <span th:text="${user.email}"></span></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <form th:action="@{/ql-user/send-mail}" method="post">
+                              <input type="hidden" class="form-control" id="id" name="idUser" th:value="${user.id}">
+                              <label for="note"
+                                     class="col-form-label">Nội dung:</label>
+                              <textarea rows="10"  class="form-control"
+                                        id="note" name="description" ></textarea>
+                              <div class="modal-footer" style="margin-top: 20px">
+                                <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                  Đóng
+                                </button>
+                                <button type="submit" class="btn btn-success">Gửi</button>
+
+                              </div>
+                            </form>
+
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>-->
+
+                    <!-- Model Detail-->
+                    <div class="modal fade" th:id="'idModelDetail' + ${user.id}" tabindex="-1"
+                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Chi tiết : <span th:text="${user.fullName}"></span></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="row">
+                              <div class="col-6"> <h5>Họ tên :</h5> <p th:text="${user.fullName}" ></p>
+                                <h5>Email:</h5> <p th:text="${user.email}" ></p>
+                                <h5>Số điện thoại:</h5> <p th:text="${user.phoneNumber}" ></p>
+                                <h5>Tài khoản:</h5> <p th:text="${user.userName}" ></p></div>
+                              <div class="col-6">   <h5>Địa chỉ :</h5> <p th:text="${user.address}" ></p>
+                                <h5>Vai trò:</h5> <p th:if="${user.role.id==1}">Admin</p> <p th:if="${user.role.id==2}">User</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Modal Update-->
+                <div class="modal fade" th:id="'exampleModal'+${user.id}" tabindex="-1"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg ">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Cập nhật</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <form th:action="@{/admin/updateUser}" method="post">
+                          <div class="row">
+                            <div class="col-6">
+                              <label for="fullName2"
+                                     class="col-form-label">Họ và tên:</label>
+                              <input type="text" class="form-control"
+                                     id="fullName2" name="fullName" th:value="${user.fullName}" required>
+                            </div>
+                            <div class="col-6">
+                              <label for="email2"
+                                     class="col-form-label">Email:</label>
+                              <input readonly type="email" class="form-control"
+                                     id="email2" name="email" th:value="${user.email}" required>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-6">
+                              <label for="phoneNumber2"
+                                     class="col-form-label">Số điện thoại:</label>
+                              <input type="number" class="form-control"
+                                     id="phoneNumber2" name="phoneNumber" th:value="${user.phoneNumber}" required>
+                            </div>
+                            <div class="col-6">
+                              <label for="address2"
+                                     class="col-form-label">Địa chỉ:</label>
+                              <input type="text" class="form-control"
+                                     id="address2" name="address" th:value="${user.address}" required>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-6">
+                              <label for="userName2"
+                                     class="col-form-label">Tài khoản:</label>
+                              <input readonly type="text" class="form-control"
+                                     id="userName2" name="userName" th:value="${user.userName}" required>
+                              <input readonly type="hidden" class="form-control"
+                                     name="userId" th:value="${user.id}" required>
+                              <input readonly type="hidden" class="form-control"
+                                     name="password" th:value="${user.password}" required>
+                              <input readonly type="hidden" class="form-control"
+                                     name="status" th:value="${user.status}" required>
+                            </div>
+                            <div class="col-6">
+                              <label for="ct_id" class="col-form-label">Vai trò:</label>
+                              <select class="form-control" id="ct_id" name="roleId" required>
+                                <th:block th:if="${user.role.id==1}">
+                                  <option th:value="${user.role.id}" selected>Admin</option>
+                                  <option th:value="2" >User</option>
+                                </th:block>
+                                <th:block th:if="${user.role.id==2}">
+                                  <option th:value="${user.role.id}" selected>User</option>
+                                  <option th:value="1" >Admin</option>
+                                </th:block>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Lưu </button>
+                          </div>
+                        </form>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <!-- Modal Update-->
+
+              </th:block>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <script>
+
+      ClassicEditor.create(document.querySelector('#editor')).then(eidt => {
+        console.log("da" + eidt);
+      })
+              .catch(error => {
+                console.error(error);
+              });
+
+    </script>
+    <script>
+
+      var dodai = document.getElementById("dodai").value;
+      var a = parseInt(dodai);
+      for(var i = 1;i<=a+10;i++){
+        var name = "#editor"  + i
+        ClassicEditor.create(document.querySelector(name)).then(eidt => {
+          console.log("da" + eidt);
+        })
+                .catch(error => {
+                  console.error(error);
+                });
+      }
+
+
+    </script>
+  </div>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,72 @@
+<form:form
+  action="update?userId=${user.id}"
+  modelAttribute="updateUser"
+  method="post"
+>
+  <form:hidden path="id" />
+  <form:hidden path="password" />
+  <form:hidden path="status" />
+  <div class="row">
+    <div class="col-6">
+      <label for="addname" class="col-form-label">Họ và tên:</label>
+      <form:input path="fullName" cssClass="form-control" id="addname" />
+    </div>
+    <div class="col-6">
+      <label for="addcost" class="col-form-label">Email:</label>
+      <form:input path="email" readonly cssClass="form-control" id="addcost" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <label for="addname" class="col-form-label">Số điện thoại:</label>
+      <form:input path="phoneNumber" cssClass="form-control" id="addname" />
+    </div>
+    <div class="col-6">
+      <label for="addcost" class="col-form-label">Địa chỉ:</label>
+      <form:input path="address" cssClass="form-control" id="addcost" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <label for="addname" class="col-form-label">Tài khoản:</label>
+      <form:input
+        path="userName"
+        readonly
+        cssClass="form-control"
+        id="addname"
+      />
+    </div>
+    <div class="col-6">
+      <label for="ct_id" class="col-form-label">Vai trò:</label>
+
+      <form:select path="role.id" cssClass="form-control" id="ct_id">
+        <form:option value="${user.role.id}" label="${user.role.roleName}" />
+        <c:if test="${user.role.id == 1}">
+          <form:option value="2" label="user" />
+        </c:if>
+        <c:if test="${user.role.id == 2}">
+          <form:option value="1" label="admin" />
+        </c:if>
+      </form:select>
+
+      <%--
+      <select class="form-control" id="ct_id" name="roleId" required>
+        <option value="${user.role.id}" selected>${user.role.roleName}</option>
+
+        <c:if test="${user.role.id == 1}">
+          <option value="2">user</option>
+        </c:if>
+        <c:if test="${user.role.id == 2}">
+          <option value="1">admin</option>
+        </c:if>
+      </select>
+      --%>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      Đóng
+    </button>
+    <button type="submit" class="btn btn-primary">Lưu</button>
+  </div>
+</form:form>
