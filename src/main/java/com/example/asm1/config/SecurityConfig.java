@@ -51,6 +51,7 @@ public class SecurityConfig {
                                 .requestMatchers("/admin1/assets/**").permitAll()
                                 .requestMatchers("/user/assets/**").permitAll()
                                 .requestMatchers("/").permitAll()
+                                .requestMatchers("/home").permitAll()
                                 .requestMatchers("/register").permitAll()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
