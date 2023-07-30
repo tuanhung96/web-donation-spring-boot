@@ -3,6 +3,7 @@ package com.example.asm1.controller;
 import com.example.asm1.entity.Donation;
 import com.example.asm1.entity.Role;
 import com.example.asm1.entity.User;
+import com.example.asm1.entity.UserDonation;
 import com.example.asm1.service.DonationService;
 import com.example.asm1.service.UserDonationService;
 import com.example.asm1.service.UserService;
@@ -95,7 +96,7 @@ public class AdminController {
         return "redirect:/admin/account";
     }
 
-    @PostMapping("/unlockUser")
+    @GetMapping("/unlockUser")
     public String unlockUser(@RequestParam("userId") int theId) {
         // get user by id
         User user = userService.findById(theId);
@@ -141,16 +142,164 @@ public class AdminController {
     }
 
     @GetMapping("/donation")
-    public String donation(Model theModel, HttpServletRequest request) {
+    public String donation(Model theModel) {
         // get users from service
         List<Donation> donations = donationService.getDonations();
 
         // add users to the Model
         theModel.addAttribute("donations", donations);
 
-        // set attribute addDonationSuccess and check if add donation successfully or not
-        theModel.addAttribute("addDonationSuccess", request.getParameter("addDonationSuccess"));
-
         return "admin/donation";
+    }
+
+    @PostMapping("/addDonation")
+    public String addDonation(RedirectAttributes theModel,
+                              @RequestParam("code") String code,
+                              @RequestParam("name") String name,
+                              @RequestParam("startDate") String startDate,
+                              @RequestParam("endDate") String endDate,
+                              @RequestParam("organizationName") String organizationName,
+                              @RequestParam("phoneNumber") String phoneNumber,
+                              @RequestParam("description") String description) {
+
+        // money = 0 when create donation
+        int money = 0;
+
+        // status = 1 : Mới tạo
+        int status = 1;
+
+        // create donation and save to database
+        Donation donation = new Donation(code, name, startDate, endDate, organizationName, phoneNumber, money, status, description);
+        donationService.saveDonation(donation);
+
+        // set attribute addDonationSuccess
+        theModel.addFlashAttribute("addDonationSuccess", "Successfully");
+
+        return "redirect:/admin/donation";
+    }
+
+    @PostMapping("/deleteDonation")
+    public String deleteDonation(@RequestParam("donationId") int theId) {
+        donationService.deleteById(theId);
+        return "redirect:/admin/donation";
+    }
+
+    @PostMapping("/updateDonation")
+    public String updateDonation(@RequestParam("donationId") int theId,
+                                 @RequestParam("code") String code,
+                                 @RequestParam("name") String name,
+                                 @RequestParam("startDate") String startDate,
+                                 @RequestParam("endDate") String endDate,
+                                 @RequestParam("organizationName") String organizationName,
+                                 @RequestParam("phoneNumber") String phoneNumber,
+                                 @RequestParam("money") int money,
+                                 @RequestParam("status") int status,
+                                 @RequestParam("description") String description) {
+
+        // create donation
+        Donation donation = new Donation(code, name, startDate, endDate, organizationName, phoneNumber, money, status, description);
+        donation.setId(theId);
+
+        // update donation in database
+        donationService.saveDonation(donation);
+
+        return "redirect:/admin/donation";
+    }
+
+    @GetMapping("/detailDonation")
+    public String adminDetail(@RequestParam("donationId") int donationId, Model theModel) {
+        // get donation by id
+        Donation donation = donationService.findById(donationId);
+        theModel.addAttribute("donation", donation);
+
+        // get all userDonations
+        List<UserDonation> userDonations = userDonationService.getUserDonations(donationId);
+        theModel.addAttribute("userDonations", userDonations);
+
+        return "admin/detail";
+    }
+
+    @PostMapping("/statusToDonate")
+    public String statusToDonate(@RequestParam("donationId") int theId) {
+        // get donation by id
+        Donation donation = donationService.findById(theId);
+
+        // set status = 2 : Đang quyên góp
+        donation.setStatus(2);
+
+        // update donation in database
+        donationService.saveDonation(donation);
+
+        return "redirect:/admin/donation";
+    }
+
+    @PostMapping("/statusToFinish")
+    public String statusToFinish(@RequestParam("donationId") int theId) {
+        // get donation by id
+        Donation donation = donationService.findById(theId);
+
+        // set status = 3 : Kết thúc quyên góp
+        donation.setStatus(3);
+
+        // update donation in database
+        donationService.saveDonation(donation);
+
+        return "redirect:/admin/donation";
+    }
+
+    @PostMapping("/statusToClose")
+    public String statusToClose(@RequestParam("donationId") int theId) {
+        // get donation by id
+        Donation donation = donationService.findById(theId);
+
+        // set status = 4 : Đóng quyên góp
+        donation.setStatus(4);
+
+        // update donation in database
+        donationService.saveDonation(donation);
+
+        return "redirect:/admin/donation";
+    }
+
+    @PostMapping("/confirmUserDonation")
+    public String confirmUserDonation(@RequestParam("userDonationId") int userDonationId,
+                                      @RequestParam("donationId") int donationId) {
+
+        // get userDonation by id
+        UserDonation userDonation = userDonationService.findById(userDonationId);
+
+        // set status = 1 : Đã xác nhận
+        userDonation.setStatus(1);
+
+        // update donation in database
+        userDonationService.saveUserDonation(userDonation);
+
+        // get donation by id
+        Donation donation = donationService.findById(donationId);
+
+        // caculate totalMoney and set money of this donation
+        int totalMoney = donation.getMoney() + userDonation.getMoney();
+        donation.setMoney(totalMoney);
+
+        // update donation in database
+        donationService.saveDonation(donation);
+
+        return "redirect:/admin/detailDonation?donationId=" + donationId;
+    }
+
+    @PostMapping("/unconfirmUserDonation")
+    public String unconfirmUserDonation(@RequestParam("userDonationId") int userDonationId,
+                                        @RequestParam("donationId") int donationId) {
+
+        // get userDonation by id
+        UserDonation userDonation = userDonationService.findById(userDonationId);
+
+        // set status = 3 : Hủy xác nhận
+        userDonation.setStatus(3);
+
+        // update donation in database
+        userDonationService.saveUserDonation(userDonation);
+
+        return "redirect:/admin/detailDonation?donationId=" + donationId;
     }
 }

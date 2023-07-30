@@ -66,10 +66,19 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UsernameNotFoundException("Invalid email or password.");
+            throw new UsernameNotFoundException("Invalid email or password!");
+        }
+        if (user.getStatus() == 2) {
+            throw new RuntimeException("Tai khoan da bi khoa!");
         }
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 Arrays.asList(new SimpleGrantedAuthority(user.getRole().getRoleName()))); // param number 3 must be a Collection

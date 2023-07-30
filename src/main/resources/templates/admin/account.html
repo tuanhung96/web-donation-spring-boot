@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
   <meta charset="utf-8" />
@@ -38,7 +38,7 @@
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
   <nav th:fragment="html_nav" class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
-    <a class="navbar-brand ps-3">QUẢN TRỊ</a>
+    <a class="navbar-brand ps-3" th:href="@{/admin/home}">QUẢN TRỊ</a>
     <!-- Sidebar Toggle-->
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
             class="fas fa-bars"></i></button>
@@ -48,7 +48,7 @@
     <!-- Navbar-->
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
             <li class="nav-item dropdown">
-                <a sec:authorize="hasRole('ADMIN')" class="nav-link dropdown-toggle" th:href="@{/logout}" role="button" ><i class="fas fa-user fa-fw"></i><span> Logout</span></a>
+              <a sec:authorize="isAuthenticated()" class="nav-link dropdown-toggle" th:href="@{/logout}" role="button" ><i class="fas fa-user fa-fw"></i><span> Logout</span></a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown1">
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><a class="dropdown-item" href="#">Activity Log</a></li>
@@ -96,11 +96,11 @@
       <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
           <div class="sb-sidenav-menu">
               <div class="nav">
-                  <a class="nav-link" href="account">
+                  <a class="nav-link" th:href="@{/admin/account}">
                       <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                       Quản lý người dùng
                   </a>
-                  <a class="nav-link" href="donation">
+                  <a class="nav-link" th:href="@{/admin/donation}">
                       <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                       Quản lý đợt quyên góp
                   </a>
@@ -429,6 +429,7 @@
                 <!-- Modal Update-->
 
               </th:block>
+
               </tbody>
             </table>
           </div>

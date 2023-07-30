@@ -172,7 +172,7 @@
                 <h2 class="mb-4">Đăng nhập</h2>
                 <form th:action="@{/authenticateTheUser}" method="POST" class="p-4 border rounded">
                     <div th:if="${param.error}">
-                        <i>Invalid email/password Or Account has not been verified!</i>
+                        <i>Invalid email/password Or Account was locked!</i>
                     </div>
                     <div class="row form-group">
                         <div class="col-md-12 mb-3 mb-md-0">
