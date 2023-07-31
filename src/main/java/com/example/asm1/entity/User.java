@@ -31,7 +31,7 @@ public class User {
     @Column(name="status")
     private Integer status;
 
-    @OneToOne
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="role_id")
     private Role role;
 

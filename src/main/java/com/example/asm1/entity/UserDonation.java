@@ -25,11 +25,11 @@ public class UserDonation {
     @Column(name="status")
     private Integer status;
 
-    @OneToOne
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="donation_id")
     private Donation donation;
 
-    @OneToOne
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="user_id")
     private User user;
 
